@@ -1,0 +1,52 @@
+<div id="page">
+  <table class="job-applicants">
+    <thead>
+      <tr>
+        <th>Job</th>
+        <th>Applicant Name</th>
+        <th>Email Address</th>
+        <th>Website</th>
+        <th>Skills</th>
+        <th>Cover Letter Paragraph</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <%= for job <- @jobs do %>
+        <tr>
+          <td rowspan='<%= num_skills_in_job(job) %>' class="job-name"><%= job.name %></td>
+          <%= for applicant <- job.applicants do %>
+            <td rowspan='<%= num_skills_in_applicant(applicant) %>' class="applicant-name"><%= applicant.name %></td>
+            <td rowspan='<%= num_skills_in_applicant(applicant) %>'>
+              <%= if applicant.email do %>
+                <a href='<%= "mailto:" <> applicant.email %>'><%= applicant.email %></a>
+              <% else %>
+                ---
+              <% end %>
+            </td>
+            <td rowspan='<%= num_skills_in_applicant(applicant) %>'>
+              <%= if applicant.website do %>
+                <a href='<%= "http://" <> applicant.website %>/'><%= applicant.website %></a>
+              <% else %>
+                ---
+              <% end %>
+            </td>
+            <td><%= first_skill_name(applicant.skills) %></td>
+            <td rowspan='<%= num_skills_in_applicant(applicant) %>'><%= applicant.cover_letter %></td>
+          </tr>
+          <%= for skill <- remaining_skills(applicant.skills) do %>
+            <tr>
+              <td><%= skill.name %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="6"><%= num_applicants(@jobs) %> Applicants, <%= num_unique_skills(@jobs) %> Unique Skills</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
